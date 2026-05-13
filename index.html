@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/computer-modern@0.1.2/index.min.css">
+        <title> Comparing Cone and Cylinder</title>
+    </head>
+    <body>
+
+    <div class="page-header">
+        <h1>Acoustic Tube Resonances</h1>
+
+        <p>
+            This interactive simulation visualizes one-dimensional acoustic standing waves in cylindrical and conical ducts. 
+            The plots show the spatial pressure and particle velocity fields together with the corresponding input impedance spectrum.
+        </p>
+
+        <p>
+            The geometry can be changed independently for the left and right systems. 
+            Cylinders are defined by length <b>L</b> and radius <b>R</b>, while cones are defined by length <b>L</b> (the slant length in this case) and end radii <b>R<sub>1</sub></b> (left) and <b>R<sub>2</sub></b> (right). 
+            The complex termination impedance with real part <b>Z<sub>r</sub></b> and imaginary part <b>Z<sub>i</sub></b> controls the acoustic boundary condition at the end of the tube.
+        </p>
+
+        <p>
+            The frequency slider selects the excitation frequency shown in the field plots and impedance spectra. 
+            Additional controls allow adjustment of the visual scale, animation speed, particle density, and particle displacement exaggeration.
+        </p>
+
+        <p>
+            Note that the sliders for the impedance as well as those for the particle displacement exaggeration are logarithmic.
+        </p>
+    </div>
+       
+
+       <div class="lab-root">
+
+            <div class="lab-top">
+
+                <div class="controls" id="controls0">
+                    <div class="geometry-controls" id="geometry-controls0">
+                        <div class="slider-wrapper" id="Lslider0-wrapper">
+                            <label for="Lslider0">L</label>
+                            <input id="Lslider0" type="range" min="0.5" max="3" step="0.001"> 
+                            <input id="Linput0" type="number" min="0.5" max="3" step="0.001">
+                        </div>
+                        <div class="slider-wrapper" id="Rslider0-wrapper">
+                            <label for="Rslider0">R</label>
+                            <input id="Rslider0" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="Rinput0" type="number" min="0.001" max="1" step="0.001">
+                        </div>
+                         <div class="slider-wrapper" id="R1slider0-wrapper">
+                            <label for="R1slider0">R<sub>1</sub></label>
+                            <input id="R1slider0" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="R1input0" type="number" min="0.001" max="1" step="0.001">
+                        </div>
+                         <div class="slider-wrapper" id="R2slider0-wrapper">
+                            <label for="R2slider0">R<sub>2</sub></label>
+                            <input id="R2slider0" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="R2input0" type="number" min="0.001" max="1" step="0.001">
+                        </div>
+                    </div>
+
+                    <select id="type0">
+                        <option value="cylinder">Cylinder</option>
+                        <option value="cone">Cone</option>
+                    </select>
+
+                    <div class="Z-controls" id="Z-controls0">
+                        <div class="slider-wrapper" id="Zrslider0-wrapper">
+                            <label for="Zrslider0">Z<sub>r</sub></label>
+                            <input id="Zrslider0" type="range" min="0.00" max="1" step="0.00001"> 
+                            <input id="Zrinput0" type="number" min="0.00" max="1e5" step="0.001"> 
+                        </div>
+                        <div class="slider-wrapper" id="Zislider0-wrapper">
+                            <label for="Zislider0">Z<sub>i</sub></label>
+                            <input id="Zislider0" type="range" min="0.00" max="1" step="0.00001"> 
+                            <input id="Ziinput0" type="number" min="0.00" max="1" step="0.001"> 
+                        </div>
+                    </div>
+        
+                </div>
+
+
+                <div class="controls" id="controls1">
+                    <div class="geometry-controls" id="geometry-controls1">
+                        <div class="slider-wrapper" id="Lslider1-wrapper">
+                            <label for="Lslider1">L</label>
+                            <input id="Lslider1" type="range" min="0.5" max="3" step="0.001"> 
+                            <input id="Linput1" type="number" min="0.5" max="3" step="0.001">
+                        </div>
+                        <div class="slider-wrapper" id="Rslider1-wrapper">
+                            <label for="Rslider1">R</label>
+                            <input id="Rslider1" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="Rinput1" type="number" min="0.001" max="3" step="0.001">
+                        </div>
+                         <div class="slider-wrapper" id="R1slider1-wrapper">
+                            <label for="R1slider1">R<sub>1</sub></label>
+                            <input id="R1slider1" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="R1input1" type="number" min="0.001" max="3" step="0.001">
+                        </div>
+                         <div class="slider-wrapper" id="R2slider1-wrapper">
+                            <label for="R2slider1">R<sub>2</sub></label>
+                            <input id="R2slider1" type="range" min="0.001" max="1" step="0.001"> 
+                            <input id="R2input1" type="number" min="0.001" max="3" step="0.001">
+                        </div>
+                    </div>
+
+                    <select id="type1">
+                        <option value="cylinder">Cylinder</option>
+                        <option value="cone">Cone</option>
+                    </select>
+
+                    <div class="Z-controls" id="Z-controls1">
+                        <div class="slider-wrapper" id="Zrslider1-wrapper">
+                            <label for="Zrslider1">Z<sub>r</sub></label>
+                            <input id="Zrslider1" type="range" min="0.00" max="1" step="0.00001"> 
+                            <input id="Zrinput1" type="number" min="0.001" max="3" step="0.001"> 
+                        </div>
+                        <div class="slider-wrapper" id="Zislider1-wrapper">
+                            <label for="Zislider1">Z<sub>i</sub></label>
+                            <input id="Zislider1" type="range" min="0.001" max="1000" step="1"> 
+                            <input id="Ziinput1" type="number" min="0.00" max="1" step="0.00001"> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="lab-mid">
+                <div id="spectrum0" class="spectrum"></div>
+                <div class="global-controls">
+                    <div class="slider-wrapper" id="freqSlider-wrapper">
+                        <label for="freqSlider">Frequency in Hz</label>
+                        <input type="range" id="freqSlider" min="0" max="1500" step="0.1">
+                        <input id="freqInput" type="number" min="0.00" max="1500" step="0.1"> 
+                    </div>
+                    <div class="slider-wrapper" id="pxPerUnitslider-wrapper">
+                        <label for="pxPerUnitslider">Size Scale</label>
+                        <input id="pxPerUnitslider" type="range" min="20" max="500" step="1">
+                        <input id="pxPerUnitinput" type="number" min="20" max="500" step="0.1">
+                    </div>
+                    <div class="slider-wrapper" id="timeScaleslider-wrapper">
+                        <label for="timeScaleslider">Time Scale</label>
+                        <input id="timeScaleslider" type="range" min="0.0001" max="0.01" step="0.0001">
+                        <input id="timeScaleinput" type="number" min="0.0001" max="0.05" step="0.0001">
+                    </div>
+                    <div class="slider-wrapper" id="particleDensitySlider-wrapper">
+                        <label for="particleDensityslider">Particle Density</label>
+                        <input id="particleDensityslider" type="range" min="200" max="10000" step="200">
+                        <input id="particleDensityinput" type="number" min="200" max="10000" step="10">
+                    </div>
+                </div>
+                <div id="spectrum1" class="spectrum"></div>
+            </div>
+
+            <div class="lab-bottom">
+                    <div class="field-wrapper" id="field-wrapper0">
+                        <div id="field0"></div>
+                    </div>
+                    <div class="slider-wrapper" id="particleMovement0-wrapper">
+                        <label for="particleMovementslider">Particle Movement Scale</label>
+                        <input id="particleMovementSlider0" type="range" min="0" max="1" step="0.00001">
+                        <input id="particleMovementInput0" type="number" step="0.001">
+                    </div>
+                    <div class="particle-wrapper" id="particle-wrapper0">
+                        <canvas id="particles0"></canvas>
+                    </div>
+
+                <div class="sync-control">
+                    <label>
+                        <input type="checkbox" id="synchronizeToggle">
+                        Synchronize Axes
+                    </label>
+                </div>
+                    <div class="field-wrapper" id="field-wrapper1">
+                        <div id="field1"></div>
+                    </div>
+                    <div class="slider-wrapper" id="particleMovement1-wrapper">
+                        <label for="particleMovementslider">Particle Movement Scale</label>
+                        <input id="particleMovementSlider1" type="range" min="0" max="1" step="0.00001">
+                        <input id="particleMovementInput1" type="number" step="0.001">
+                    </div>
+                    <div class="particle-wrapper" id="particle-wrapper1">
+                        <canvas id="particles1"></canvas>
+                    </div>
+            </div>
+            
+            
+        </div>
+   
+
+        <script src="./build/acoustics.js"></script>
+        <script src="https://cdn.plot.ly/plotly-3.5.0.min.js"></script>
+        <script src="main.js"></script>
+
+    </body>
+</html>

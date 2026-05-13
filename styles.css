@@ -1,0 +1,233 @@
+
+body {
+    font-family: "Computer Modern Serif", serif;
+}
+
+.page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px auto 25px auto;
+}
+
+.page-header p {
+    max-width: 60vw;
+    margin: 10px 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+
+input[type="range"] {
+    width: 120px;
+}
+input[type="number"] {
+    width: 70px;
+}
+
+.lab-top {
+    display: grid;
+
+    grid-template-columns: 7fr 1fr 7fr;
+    grid-template-rows: auto auto auto;
+
+    grid-template-areas:
+        "controls0 none controls1"
+        "freq freq freq"
+        "view-controls view-controls view-controls";
+
+    justify-content: center;
+
+    column-gap: 30px;
+    row-gap: 15px;
+
+    padding: 10px 0;
+}
+
+.controls {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    row-gap: 5px;
+}
+
+.slider-wrapper {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    justify-items: center;
+    column-gap: 4px;
+}
+
+.Z-controls {
+    display: grid;
+    grid-auto-flow: column;
+    column-gap: 30px;
+    justify-self: center;
+}
+
+#controls0 {
+    grid-area: controls0; 
+    justify-self: right;
+}
+#type0 {
+    grid-row: 1;
+    text-align: center;
+}
+#geometry-controls0 {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto;
+    grid-template-areas: 
+    "Lslider0 Rslider0 R1slider0"
+    "Lslider0 Rslider0 R2slider0";
+    row-gap: 5px;
+    column-gap: 30px;
+}
+#Lslider0-wrapper {
+    grid-area: Lslider0;
+}
+#Rslider0-wrapper {
+    grid-area: Rslider0;
+}
+#R1slider0-wrapper {
+    grid-area: R1slider0;
+}
+#R2slider0-wrapper {
+    grid-area: R2slider0;
+}
+
+#controls1 {
+    grid-area: controls1; 
+    justify-self: left;
+}
+#type1 {
+    grid-row: 1;
+    text-align: center;
+}
+#geometry-controls1 {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto;
+    grid-template-areas: 
+    "Lslider1 Rslider1 R1slider1"
+    "Lslider1 Rslider1 R2slider1";
+    row-gap: 5px;
+    column-gap: 30px;
+}
+#Lslider1-wrapper {
+    display: grid;
+    grid-area: Lslider1;
+}
+#Rslider1-wrapper {
+    grid-area: Rslider1;
+}
+#R1slider1-wrapper {
+    grid-area: R1slider1;
+}
+#R2slider1-wrapper {
+    grid-area: R2slider1;
+}
+
+
+.lab-mid { 
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    text-align: center;
+}
+
+.global-controls {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 12px;
+    align-content: start;
+    justify-content: left;
+}
+
+#spectrum0 { 
+    justify-self: end;
+}
+#spectrum1 { 
+    justify-self: start;
+}
+
+.spectrum {
+    height: 200px;
+}
+
+#pxPerUnitslider-wrapper, #timeScaleslider-wrapper, #freqSlider-wrapper, #particleDensitySlider-wrapper {
+  justify-self: right;
+}
+#freqSlider, #pxPerUnitslider, #timeScaleslider, #particleDensityslider {
+    width: auto;
+}
+
+
+
+.lab-bottom {
+    display: grid;
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: 
+    "field0 sync field1"
+    "particleMovementSlider0 none particleMovementSlider1"
+    "particles0 none particles1";
+    /* overflow-x: visible; */
+}
+
+
+.sync-control { 
+    grid-area: sync; 
+    text-align: center;
+    margin-top: 100px;
+}
+
+.field-wrapper {
+    position: relative;
+    /* overflow-x: hidden;
+    overflow-y: hidden; */
+} 
+#field-wrapper0 {
+    display: grid;
+    grid-area: field0;
+    justify-items: right;
+    overflow: visible;
+    justify-self: end;
+
+}
+#particleMovement0-wrapper {
+    display: grid;
+    grid-area: particleMovementSlider0;
+    /* justify-items: right; */
+    justify-self: right;
+    padding: 20px 0;
+}
+#particle-wrapper0 {
+    display: grid;
+    grid-area: particles0;
+    justify-items: right;
+    overflow: visible;
+    justify-self: end;
+} 
+
+#field-wrapper1 {
+    display: grid;
+    grid-area: field1;
+    justify-items: left;
+    overflow: visible;
+    justify-self: start;
+}
+#particleMovement1-wrapper {
+    display: grid;
+    grid-area: particleMovementSlider1;
+    /* justify-items: left; */
+    justify-self: left;
+}
+#particle-wrapper1 {
+    display: grid;
+    grid-area: particles1;
+    justify-items: left;
+    overflow: visible;
+    justify-self: start;
+} 
