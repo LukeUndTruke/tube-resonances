@@ -12,14 +12,15 @@
         <h1>Acoustic Tube Resonances</h1>
 
         <p>
-            This interactive simulation visualizes one-dimensional acoustic standing waves in cylindrical and conical ducts. 
-            The plots show the spatial pressure and particle velocity fields together with the corresponding input impedance spectrum.
+            This interactive simulation visualizes one-dimensional acoustic waves in cylindrical and conical ducts, allowing direct comparison of two different geometries, especially cylinders and cones.
+            The plots show the spatial pressure and volume velocity fields together with the corresponding input impedance spectrum.
         </p>
 
         <p>
             The geometry can be changed independently for the left and right systems. 
             Cylinders are defined by length <b>L</b> and radius <b>R</b>, while cones are defined by length <b>L</b> (the slant length in this case) and end radii <b>R<sub>1</sub></b> (left) and <b>R<sub>2</sub></b> (right). 
-            The complex termination impedance with real part <b>Z<sub>r</sub></b> and imaginary part <b>Z<sub>i</sub></b> controls the acoustic boundary condition at the end of the tube.
+            The complex termination impedance with real part <b>Z<sub>r</sub></b> and imaginary part <b>Z<sub>i</sub></b> controls the acoustic boundary condition at the end of the tube. The boundary condition at the input end is chosen to be a harmonic volume velocity with fixed unit amplitude.
+            Speed of sound and density inside the geometry are those of air. 
         </p>
 
         <p>
@@ -40,22 +41,22 @@
                 <div class="controls" id="controls0">
                     <div class="geometry-controls" id="geometry-controls0">
                         <div class="slider-wrapper" id="Lslider0-wrapper">
-                            <label for="Lslider0">L</label>
+                            <label for="Lslider0"><b>L</b></label>
                             <input id="Lslider0" type="range" min="0.5" max="3" step="0.001"> 
                             <input id="Linput0" type="number" min="0.5" max="3" step="0.001">
                         </div>
                         <div class="slider-wrapper" id="Rslider0-wrapper">
-                            <label for="Rslider0">R</label>
+                            <label for="Rslider0"><b>R</b></label>
                             <input id="Rslider0" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="Rinput0" type="number" min="0.001" max="1" step="0.001">
                         </div>
                          <div class="slider-wrapper" id="R1slider0-wrapper">
-                            <label for="R1slider0">R<sub>1</sub></label>
+                            <label for="R1slider0"><b>R</b><sub>1</sub></label>
                             <input id="R1slider0" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="R1input0" type="number" min="0.001" max="1" step="0.001">
                         </div>
                          <div class="slider-wrapper" id="R2slider0-wrapper">
-                            <label for="R2slider0">R<sub>2</sub></label>
+                            <label for="R2slider0"><b>R</b><sub>2</sub></label>
                             <input id="R2slider0" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="R2input0" type="number" min="0.001" max="1" step="0.001">
                         </div>
@@ -68,13 +69,13 @@
 
                     <div class="Z-controls" id="Z-controls0">
                         <div class="slider-wrapper" id="Zrslider0-wrapper">
-                            <label for="Zrslider0">Z<sub>r</sub></label>
+                            <label for="Zrslider0"><b>Z</b><sub>r</sub></label>
                             <input id="Zrslider0" type="range" min="0.00" max="1" step="0.00001"> 
                             <input id="Zrinput0" type="number" min="0.00" max="1e5" step="0.001"> 
                         </div>
                         <div class="slider-wrapper" id="Zislider0-wrapper">
-                            <label for="Zislider0">Z<sub>i</sub></label>
-                            <input id="Zislider0" type="range" min="0.00" max="1" step="0.00001"> 
+                            <label for="Zislider0"><b>Z</b><sub>i</sub></label>
+                            <input id="Zislider0" type="range" min="-1" max="1" step="0.00001"> 
                             <input id="Ziinput0" type="number" min="0.00" max="1" step="0.001"> 
                         </div>
                     </div>
@@ -85,22 +86,22 @@
                 <div class="controls" id="controls1">
                     <div class="geometry-controls" id="geometry-controls1">
                         <div class="slider-wrapper" id="Lslider1-wrapper">
-                            <label for="Lslider1">L</label>
+                            <label for="Lslider1"><b>L</b></label>
                             <input id="Lslider1" type="range" min="0.5" max="3" step="0.001"> 
                             <input id="Linput1" type="number" min="0.5" max="3" step="0.001">
                         </div>
                         <div class="slider-wrapper" id="Rslider1-wrapper">
-                            <label for="Rslider1">R</label>
+                            <label for="Rslider1"><b>R</b></label>
                             <input id="Rslider1" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="Rinput1" type="number" min="0.001" max="3" step="0.001">
                         </div>
                          <div class="slider-wrapper" id="R1slider1-wrapper">
-                            <label for="R1slider1">R<sub>1</sub></label>
+                            <label for="R1slider1"><b>R</b><sub>1</sub></label>
                             <input id="R1slider1" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="R1input1" type="number" min="0.001" max="3" step="0.001">
                         </div>
                          <div class="slider-wrapper" id="R2slider1-wrapper">
-                            <label for="R2slider1">R<sub>2</sub></label>
+                            <label for="R2slider1"><b>R</b><sub>2</sub></label>
                             <input id="R2slider1" type="range" min="0.001" max="1" step="0.001"> 
                             <input id="R2input1" type="number" min="0.001" max="3" step="0.001">
                         </div>
@@ -113,13 +114,13 @@
 
                     <div class="Z-controls" id="Z-controls1">
                         <div class="slider-wrapper" id="Zrslider1-wrapper">
-                            <label for="Zrslider1">Z<sub>r</sub></label>
+                            <label for="Zrslider1"><b>Z</b><sub>r</sub></label>
                             <input id="Zrslider1" type="range" min="0.00" max="1" step="0.00001"> 
                             <input id="Zrinput1" type="number" min="0.001" max="3" step="0.001"> 
                         </div>
                         <div class="slider-wrapper" id="Zislider1-wrapper">
-                            <label for="Zislider1">Z<sub>i</sub></label>
-                            <input id="Zislider1" type="range" min="0.001" max="1" step="0.00001"> 
+                            <label for="Zislider1"><b>Z</b><sub>i</sub></label>
+                            <input id="Zislider1" type="range" min="-1" max="1" step="0.00001"> 
                             <input id="Ziinput1" type="number" min="0.00" max="1" step="0.00001"> 
                         </div>
                     </div>

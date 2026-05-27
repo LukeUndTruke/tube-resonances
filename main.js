@@ -128,7 +128,7 @@ createModule().then(Module => {
             }
 
             if (g.type === "cone") {
-                g.dl = g.R1/(g.R2-g.R1)*g.L;
+                g.dl = g.R1/(g.R2-g.R1)*g.L; //distance from left end to (virtual) apex
                 g.costh = Math.sqrt(g.L**2 - (g.R2-g.R1)**2)/g.L;
                 g.theta = Math.acos(g.costh);
             }
@@ -208,8 +208,8 @@ createModule().then(Module => {
         const Zin = data.map(p => p.Z);
 
         g.NFreq = freq.length;
-        g.ptrs.freqPtr = safeRealloc(g.freqPtr, g.NFreq*8); 
-        g.ptrs.ZinAbsPtr = safeRealloc(g.ZinAbsPtr, g.NFreq*8);
+        g.ptrs.freqPtr = safeRealloc(g.ptrs.freqPtr, g.NFreq*8); 
+        g.ptrs.ZinAbsPtr = safeRealloc(g.ptrs.ZinAbsPtr, g.NFreq*8);
 
         g.freqArray = new Float64Array(Module.HEAPF64.buffer, g.ptrs.freqPtr, g.NFreq);
         g.ZinAbsArray = new Float64Array(Module.HEAPF64.buffer, g.ptrs.ZinAbsPtr, g.NFreq);
@@ -294,8 +294,15 @@ createModule().then(Module => {
 
     //  Longitudinal Plot
     function initParticles(g) {
-        // const area = g.type=="cylinder" ? g.R*g.L : 0.5*(g.R1+g.R2)*g.L*g.costh;
-        const area = g.type=="cylinder" ? 2*g.R*g.L : Math.abs(g.theta*((g.L+g.dl)**2-g.dl**2));
+        let area;
+        if (g.type =="cylinder") {
+            area = 2*g.R*g.L;
+        }
+        else if (g.type=="cone") {
+            if (Math.abs(g.R1-g.R2) < 0.00001) area = 2*g.R1*g.L;
+            else area = Math.abs(g.theta*((g.L+g.dl)**2-g.dl**2));
+        }
+
         const numParticles = Math.round(densityParticles*area);
         g.particles = [];
         if (g.type=="cylinder") {
@@ -306,15 +313,23 @@ createModule().then(Module => {
             }
         }
         else if (g.type=="cone") {
-            for (let i=0; i<numParticles; i++) {
-                const r0 = Math.random()*g.L;
-                const phi0 = 2*(Math.random()-0.5) * g.theta;
-                // const x0 = (r0+g.dl)*Math.cos(phi0)-g.dl*g.costh;
-                // const y0 = (r0+g.dl)*Math.sin(phi0);
-                // const x0 = r0*Math.cos(phi0);
-                // const y0 = r0*Math.sin(phi0);                
-                g.particles.push({r0:r0, phi0:phi0, r:r0});
+
+            if (Math.abs(g.R1-g.R2) < 0.00001) {
+                for (let i=0; i<numParticles; i++) {
+                    const x0 = Math.random()*g.L;
+                    const y0 = 2.0*(Math.random()-0.5)*g.R1;
+                    g.particles.push({x0:x0, y0:y0, x:x0, y:y0});
+                }
             }
+            else {
+                for (let i=0; i<numParticles; i++) {
+                    // via inversion sampling
+                    const u = Math.random();
+                    const r0 = g.L/(g.R2-g.R1) * (-g.R1 + Math.sqrt(g.R1*g.R1 + (g.R2*g.R2-g.R1*g.R1)*u));
+                    const phi0 = 2*(Math.random()-0.5) * g.theta;
+                    g.particles.push({r0:r0, phi0:phi0, r:r0});
+                }
+            } 
         }
     }
     
@@ -325,9 +340,6 @@ createModule().then(Module => {
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         const dpr = window.devicePixelRatio;
-    
-        canvas.width = canvas.clientWidth * dpr;
-        canvas.height = canvas.clientHeight * dpr;
         const canvasHeightHalf = ctx.canvas.height / 2;
         
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);    
@@ -339,10 +351,8 @@ createModule().then(Module => {
             const px = leftMargin + p.x * pxPerUnit;
             const py = canvasHeightHalf + (p.y * pxPerUnit);
 
-            ctx.rect(px, py, 2, 2);
+            ctx.fillRect(px, py, 2, 2);
         }
-
-        ctx.fill();
     }
 
         
@@ -412,10 +422,13 @@ createModule().then(Module => {
         
 
 
-        // update canvas height
+        // update canvas geometry
+        const dpr = window.devicePixelRatio;
         const canvas = animCanvases[i];
         canvas.style.width = `${g.L * pxPerUnit + leftMargin + rightMargin}px`;
         canvas.style.height = `${2 * g.rMax * pxPerUnit}px`;
+        canvas.width = canvas.clientWidth * dpr;
+        canvas.height = canvas.clientHeight * dpr;
 
         const fieldPlots = document.getElementById(`field${i}`);
         fieldPlots.style.width = `${g.L * pxPerUnit + leftMargin + rightMargin}px`;
@@ -599,11 +612,14 @@ createModule().then(Module => {
 
     function updateVisualScale(g, i) {
 
-        // update canvas height
+        // update canvas geometry
+        const dpr = window.devicePixelRatio;
         const canvas = animCanvases[i];
         const width = g.L * pxPerUnit + leftMargin + rightMargin;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${2 * g.rMax * pxPerUnit}px`;
+        canvas.width = canvas.clientWidth * dpr;
+        canvas.height = canvas.clientHeight * dpr;
 
         const fieldPlots = document.getElementById(`field${i}`);
         fieldPlots.style.width = `${g.L * pxPerUnit + leftMargin + rightMargin}px`;
@@ -678,10 +694,10 @@ createModule().then(Module => {
 
 
     function sliderToInput(t, min, max) {
-        return min * (max/min)**t;
+        return Math.sign(t) * min*(max/min)**Math.abs(t);
     }
     function inputToSlider(input, min, max) {
-        return Math.log(input/min)/Math.log(max/min);
+        return Math.sign(input) * Math.log(Math.abs(input)/min)/Math.log(max/min);
     }
 
 
@@ -729,9 +745,10 @@ createModule().then(Module => {
             ZrInput.min = Zrmin;
             ZrInput.max = Zrmax;
             Zimin = 1e-5;
-            Zimax = 1e+8;
-            ZrInput.min = Zimin;
+            Zimax = 1e8;
             ZiInput.max = Zimax;
+            ZiInput.min = -Zimax;
+            
 
             //initialize
             ZrSlider.value = inputToSlider(g.Zr, Zrmin, Zrmax);
@@ -831,6 +848,7 @@ createModule().then(Module => {
                 ticks: "outside",
             },
             yaxis: {
+                range: [-6, 12],
                 type: "log",
                 title: {
                     text: "Input Impedance",
@@ -931,9 +949,12 @@ createModule().then(Module => {
 
         const rMax = Math.max(g.R ?? 0, g.R1 ?? 0, g.R2 ?? 0);
         const width = g.L * pxPerUnit + leftMargin + rightMargin;
+        
+        const dpr = window.devicePixelRatio;
         animCanvases[i].style.width = `${width}px`;
         animCanvases[i].style.height = `${2*g.rMax * pxPerUnit}px`;
-
+        animCanvases[i].width = animCanvases[i].clientWidth * dpr;
+        animCanvases[i].height = animCanvases[i].clientHeight * dpr;
         drawParticles(animCanvases[i], g);
     })
 
@@ -945,7 +966,6 @@ createModule().then(Module => {
 
 
     let start;
-
     geometries.forEach((g,i) => {
         g.pDynamic = new Float64Array(g.N);
         g.uDynamic = new Float64Array(g.N);
@@ -953,51 +973,61 @@ createModule().then(Module => {
 
     function step(timestamp) {
 
-
         if (start === undefined) {
             start = timestamp;
         }
         const t = (timestamp - start)/1000*timeScale; //elapsed time since start
         const synchronize = synchronizeToggle.checked;
+
         geometries.forEach((g, i) => {  
-                const particles = g.particles;
-                if (g.type=="cylinder") {
+            const particles = g.particles;
+            if (g.type=="cylinder") {
+                particles.forEach( (p, j) => {
+                    const dx = displacement(g, p.x0, t);
+                    p.x = p.x0 + dx * g.scaleFactor; 
+                })
+
+            }
+
+            else if (g.type=="cone") {
+                if (Math.abs(g.R1-g.R2) < 0.00001) {
                     particles.forEach( (p, j) => {
                         const dx = displacement(g, p.x0, t);
                         p.x = p.x0 + dx * g.scaleFactor; 
                     })
-
                 }
-                else if (g.type=="cone") {
+                else {
                     particles.forEach( (p, j) => {
                         const dr = displacement(g, p.r0, t);
-                        p.r = p.r0 + dr * g.scaleFactor;
-                        p.x = (p.r+g.dl)*Math.cos(p.phi0)-g.dl;
-                        // p.x = Math.max(-g.dl, (p.r+g.dl)*Math.cos(p.phi0)-g.dl);
+                        p.r =  g.dl>0 ? Math.max(-g.dl, p.r0 + dr*g.scaleFactor) : Math.min(-g.dl, p.r0 + dr*g.scaleFactor);
+                        p.x =  (p.r+g.dl)*Math.cos(p.phi0)- g.dl;
                         p.y =  (p.r+g.dl)*Math.sin(p.phi0);
                     })
                 }
-                drawParticles(animCanvases[i], g);
-
-            for (let j = 0; j < g.N; j++) {
-                g.pDynamic[j] = Math.cos(g.pArg[j] + 2*Math.PI*f*t) * g.pAbs[j];
-                g.uDynamic[j] = Math.cos(g.uArg[j] + 2*Math.PI*f*t) * g.uAbs[j];
+                
             }
+            drawParticles(animCanvases[i], g);
 
-            Plotly.update(`field${i}`,
-                {   
-                    x: [g.x, g.x],
-                    y: [g.pDynamic, g.uDynamic],                
-                }, 
-                {
-                    'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
-                                    synchronize ?  globalpMax :  g.pMax],
-                    'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
-                                    synchronize ?  globaluMax :  g.uMax]
-                }
+        for (let j = 0; j < g.N; j++) {
+            g.pDynamic[j] = Math.cos(g.pArg[j] + 2*Math.PI*f*t) * g.pAbs[j];
+            g.uDynamic[j] = Math.cos(g.uArg[j] + 2*Math.PI*f*t) * g.uAbs[j];
+        }
+
+        Plotly.update(`field${i}`,
+            {   
+                x: [g.x, g.x],
+                y: [g.pDynamic, g.uDynamic],                
+            }, 
+            {
+                'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
+                                synchronize ?  globalpMax :  g.pMax],
+                'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
+                                synchronize ?  globaluMax :  g.uMax]
+            }
             );
 
         })
+       
     
     requestAnimationFrame(step);
 
