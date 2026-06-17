@@ -338,6 +338,8 @@ createModule().then(Module => {
 
     function drawParticles(canvas, g) {
         const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "black";
+        ctx.setTransform(1,0,0,1,0,0);
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         const dpr = window.devicePixelRatio;
         const canvasHeightHalf = ctx.canvas.height / 2;
@@ -920,7 +922,7 @@ createModule().then(Module => {
             yaxis: {
                 showline: false,
                 title: {
-                    text: 'Pressure',
+                    text: 'Pressure [Pa]',
                 },
                 automargin: false,
                 ticks: "outside",
@@ -930,7 +932,7 @@ createModule().then(Module => {
             yaxis2: {
                 showline: true,
                 title: {
-                    text: 'Velocity'
+                    text: 'Volume Velocity [m<sup>3</sup>/s]'
                 },
                 overlaying: 'y',
                 side: 'right',
