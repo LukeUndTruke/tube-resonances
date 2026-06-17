@@ -43,7 +43,7 @@ $$
 \mathbf y(x_1) = T \mathbf y(x_2),
 $$
 
-where $\mathbf y(x) = [\hat{p}, \hat{U}]^\text{T}$ is the state vector. 
+where $\mathbf y(x) = \[\hat{p}, \hat{U}\]^\text{T}$ is the state vector. 
 This is in principle possible for every geometry. For the simplest case where $S$ is constant, the transfer matrix can be calculated directly by evaluating the corresponding matrix exponential. For the case of a cylindrical waveguide, this yields 
 
 $$
@@ -53,8 +53,7 @@ $$
 where R and L denote the cylinder radius and length, respectively, and $k=\omega/c$ is the wave number. For a cone, the transfer matrix is
 
 $$
-T_\text{cone} = 
-\begin{bmatrix} 
+T_\text{cone} = \begin{bmatrix} 
 \frac{R_2}{R_1}\cos(kL) - \frac{R_2-R_1}{R_1}\sin(kL)/(kL) & 
 i\frac{(1+\cos\vartheta)}{2} \rho_0 c/(\pi R_1 R_2)\sin(kL) \\\
 i\frac{2}{1+\cos \vartheta}\pi/(\rho_0 c) \biggl(R_1 R_2 \sin(kL) + (R_2-R_1)^2\Big( \sin(kL)/(k^2L^2) - \cos(kL)/(kL)\Big) \biggl) & 
