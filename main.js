@@ -946,6 +946,7 @@ createModule().then(Module => {
         document.getElementById(`spectrum${i}`).on('plotly_click', (data) => {
             f = data.points[0].x;
             document.getElementById("freqSlider").value = f;
+            document.getElementById("freqInput").value = f.toFixed(1);
             updateFrequency(f);
         });
 
