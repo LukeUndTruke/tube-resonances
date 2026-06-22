@@ -1,4 +1,9 @@
 createModule().then(Module => {
+
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.style.width = `${window.innerWidth/1920*parseFloat(getComputedStyle(slider).width)}px`;
+    })
+
     const computeFieldCylinder = Module.cwrap("computeFieldCylinder", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
     const computeFieldCone = Module.cwrap("computeFieldCone", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
     const computeImpedanceAbsCylinder = Module.cwrap("computeImpedanceAbsCylinder", "number", ["number", "number", "number", "number", "number"])
@@ -835,6 +840,7 @@ createModule().then(Module => {
         }
         const layoutSpectrum = {
             height: 200,
+            width: 750*window.innerWidth/1920,
             margin: {
                 t: 20,
                 b: 20,
