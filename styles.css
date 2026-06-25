@@ -178,9 +178,12 @@ input[type="number"] {
 
 
 .sync-control { 
+    display: grid;
     grid-area: sync; 
     text-align: center;
-    margin-top: 100px;
+    align-content: center;
+    justify-items: center;
+    row-gap: 5%;
 }
 
 .field-wrapper {

@@ -1,8 +1,5 @@
 createModule().then(Module => {
 
-    document.querySelectorAll('input[type="range"]').forEach(slider => {
-        slider.style.width = `${window.innerWidth/1920*parseFloat(getComputedStyle(slider).width)}px`;
-    })
 
     const computeFieldCylinder = Module.cwrap("computeFieldCylinder", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
     const computeFieldCone = Module.cwrap("computeFieldCone", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
@@ -122,7 +119,7 @@ createModule().then(Module => {
         g.x = new Float64Array(Module.HEAPF64.buffer, g.ptrs.xPtr, g.N);
         g.pAbs = new Float64Array(Module.HEAPF64.buffer, g.ptrs.pAbsPtr, g.N);
         g.pArg = new Float64Array(Module.HEAPF64.buffer, g.ptrs.pArgPtr, g.N);
-        g.p= new Float64Array(Module.HEAPF64.buffer, g.ptrs.pPtr, g.N);
+        g.p = new Float64Array(Module.HEAPF64.buffer, g.ptrs.pPtr, g.N);
         g.uAbs = new Float64Array(Module.HEAPF64.buffer, g.ptrs.uAbsPtr, g.N);
         g.uArg = new Float64Array(Module.HEAPF64.buffer, g.ptrs.uArgPtr, g.N);
         g.u = new Float64Array(Module.HEAPF64.buffer, g.ptrs.uPtr, g.N);
@@ -265,6 +262,18 @@ createModule().then(Module => {
             "shapes[0].x0": f,
             "shapes[0].x1": f
             });
+            
+            Plotly.update(`field${i}`,
+            {   
+                y: [g.p, g.pAbs, g.pAbs.map(v => -v), g.u, g.uAbs, g.uAbs.map(v => -v)],                
+            },
+            {
+                'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
+                                synchronize ?  globalpMax :  g.pMax],
+                'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
+                                synchronize ?  globaluMax :  g.uMax]
+            },
+        );
         })
     }
 
@@ -294,8 +303,6 @@ createModule().then(Module => {
     bindFrequencyControls();
     
 
-
-    const synchronize = document.getElementById("synchronizeToggle").checked;
 
     //  Longitudinal Plot
     function initParticles(g) {
@@ -441,10 +448,24 @@ createModule().then(Module => {
         fieldPlots.style.width = `${g.L * pxPerUnit + leftMargin + rightMargin}px`;
 
         // update plots
-        Plotly.update(`field${i}`, {
-            x: [g.x, g.x],
-            y: [g.p, g.u]
-        });
+        // Plotly.update(`field${i}`, {
+        //     x: [g.x, g.x],
+        //     y: [g.p, g.u]
+        // });
+        Plotly.update(`field${i}`,
+            {   
+                x: [g.x, g.x, g.x, g.x, g.x, g.x],
+                y: [g.p, g.pAbs, g.pAbs.map(v => -v), g.u, g.uAbs, g.uAbs.map(v => -v)],                
+            },
+            {
+                'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
+                                synchronize ?  globalpMax :  g.pMax],
+                'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
+                                synchronize ?  globaluMax :  g.uMax]
+            },
+        );
+
+
         Plotly.relayout(`field${i}`, {
             width: g.L * pxPerUnit + leftMargin + rightMargin,
             'xaxis.range': [0, g.L]
@@ -729,10 +750,18 @@ createModule().then(Module => {
         const fieldPlots = document.getElementById(`field${i}`);
         fieldPlots.style.width = `${g.L * pxPerUnit + leftMargin + rightMargin}px`;
 
-        // update plots
-        Plotly.update(`field${i}`, {
-            y: [g.p, g.u]
-        });
+        
+        Plotly.update(`field${i}`,
+            {   
+                y: [g.p, g.pAbs, g.pAbs.map(v => -v), g.u, g.uAbs, g.uAbs.map(v => -v)],                
+            },
+            {
+                'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
+                                synchronize ?  globalpMax :  g.pMax],
+                'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
+                                synchronize ?  globaluMax :  g.uMax]
+            },
+        );
 
         Plotly.update(`spectrum${i}`, {
             x: g.freqArray,
@@ -828,9 +857,15 @@ createModule().then(Module => {
     const leftMargin = 75;
     const rightMargin = 75;
     
+    let synchronize = document.getElementById("synchronizeToggle").checked;
+    document.getElementById("synchronizeToggle").addEventListener("change", e => {
+        synchronize = e.target.checked;
+    });
+    let showEnvelopes = document.getElementById("showEnvelopes").checked;
+    let showAnimations = document.getElementById("showAnimations").checked;
+    
     geometries.forEach((g,i) => {
 
-        // Field plot
         spectrumDivs[i].height = 200;
         const traceSpectrum = {
             x: Array.from(g.freqArray),
@@ -840,7 +875,6 @@ createModule().then(Module => {
         }
         const layoutSpectrum = {
             height: 200,
-            width: 750*window.innerWidth/1920,
             margin: {
                 t: 20,
                 b: 20,
@@ -886,16 +920,74 @@ createModule().then(Module => {
             x: Array.from(g.x),
             y: Array.from(g.p),
             mode: 'lines',
-            name: 'Pressure'
+            name: 'Pressure',
+            line: {
+                color: '#1f77b4',
+            },
+            visible: showAnimations,
+        };
+        const tracePAmplitude = {
+            x: Array.from(g.x),
+            y: Array.from(g.pAbs),
+            mode: 'lines',
+            name: 'Pressure',
+            line: {
+                color: '#1f77b4',
+                dash: 'dot'
+            },
+            showlegend: !showAnimations,
+            visible: showEnvelopes,
+        };
+        const tracePNegAmplitude = {
+            x: Array.from(g.x),
+            y: Array.from(g.pAbs.map(v => -v)),
+            mode: 'lines',
+            name: 'Pressure',
+            line: {
+                color: '#1f77b4',
+                dash: 'dot',
+            },
+            showlegend: false,
+            visible: showEnvelopes,
         };
 
         const traceU = {
             x: Array.from(g.x),
             y: Array.from(g.u),
             mode: 'lines',
-            name: 'Velocity',
-            yaxis: 'y2'   // second axis
+            name: 'Volume Velocity',
+            yaxis: 'y2',
+            line: {
+                color: '#ff7f0e',
+            },
+            visible: showAnimations,
         };
+        const traceUAmplitude = {
+            x: Array.from(g.x),
+            y: Array.from(g.uAbs),
+            mode: 'lines',
+            yaxis: 'y2',
+            name: 'Volume Velocity',
+            line: {
+                color: '#ff7f0e',
+                dash: 'dot',
+            },
+            showlegend: !showAnimations,
+            visible: showEnvelopes,
+        }
+        const traceUNegAmplitude = {
+            x: Array.from(g.x),
+            y: Array.from(g.uAbs.map(v => -v)),
+            mode: 'lines',
+            yaxis: 'y2',
+            name: 'Volume Velocity',
+            line: {
+                color: '#ff7f0e',
+                dash: 'dot',
+            },
+            showlegend: false,
+            visible: showEnvelopes,
+        }
 
         const layoutField = {
             width: g.L * pxPerUnit + leftMargin + rightMargin,
@@ -948,7 +1040,9 @@ createModule().then(Module => {
             },
         };
 
-        Plotly.newPlot(`field${i}`, [traceP, traceU], layoutField);
+        const traces = [traceP, tracePAmplitude, tracePNegAmplitude, traceU, traceUAmplitude, traceUNegAmplitude]; 
+
+        Plotly.newPlot(`field${i}`, traces, layoutField);
         document.getElementById(`spectrum${i}`).on('plotly_click', (data) => {
             f = data.points[0].x;
             document.getElementById("freqSlider").value = f;
@@ -967,12 +1061,49 @@ createModule().then(Module => {
         drawParticles(animCanvases[i], g);
     })
 
-
+    document.getElementById("showEnvelopes").addEventListener("change", e => {
+        showEnvelopes = e.target.checked;
+        geometries.forEach((g, i) => {
+                Plotly.restyle (
+                    `field${i}`,
+                    { 
+                        visible: showEnvelopes,
+                    },
+                    [1, 2, 4, 5]
+                );
+                
+        });
+    });
+    document.getElementById("showAnimations").addEventListener("change", e => {
+        showAnimations = e.target.checked;
+        geometries.forEach((g, i) => {
+                Plotly.restyle (
+                    `field${i}`,
+                    { visible: showAnimations },
+                    [0, 3]
+                );
+                Plotly.restyle (
+                    `field${i}`,
+                    { 
+                        showlegend: !showAnimations,
+                    },
+                    [1, 5]
+                );                      
+        });
+    });
 
    
 
-   
 
+    let animationRunning = true;
+    const pauseButton = document.getElementById("pauseAnimation");
+    pauseButton.addEventListener("click", () => {
+        animationRunning = !animationRunning;
+        pauseButton.textContent = animationRunning ? "Pause Animation" : "Resume Animation";
+    })
+
+    let simulationTime = 0;
+    let previousTimestamp;
 
     let start;
     geometries.forEach((g,i) => {
@@ -982,11 +1113,15 @@ createModule().then(Module => {
 
     function step(timestamp) {
 
-        if (start === undefined) {
-            start = timestamp;
+        if (previousTimestamp === undefined) {
+            previousTimestamp = timestamp;
         }
-        const t = (timestamp - start)/1000*timeScale; //elapsed time since start
-        const synchronize = synchronizeToggle.checked;
+        const dt = (timestamp - previousTimestamp)/1000;
+        previousTimestamp = timestamp;
+        if (animationRunning) {
+            simulationTime += dt * timeScale;
+        }
+        const t = simulationTime;
 
         geometries.forEach((g, i) => {  
             const particles = g.particles;
@@ -1024,36 +1159,23 @@ createModule().then(Module => {
 
         Plotly.update(`field${i}`,
             {   
-                x: [g.x, g.x],
-                y: [g.pDynamic, g.uDynamic],                
-            }, 
+                y: [g.pDynamic, g.uDynamic]                
+            },
             {
                 'yaxis.range': [synchronize ? -globalpMax : -g.pMax,
                                 synchronize ?  globalpMax :  g.pMax],
                 'yaxis2.range': [synchronize ? -globaluMax : -g.uMax,
                                 synchronize ?  globaluMax :  g.uMax]
-            }
-            );
-
-        })
+            },
+            [0,3]
+        );
+    })
        
     
     requestAnimationFrame(step);
-
-
     }
     requestAnimationFrame(step);
 
-
-
-
-//     Module._free(xPtr);
-//     Module._free(p1AbsPtr);
-//     Module._free(p1ArgPtr);
-//     Module._free(u1AbsPtr);
-//     Module._free(u1ArgPtr);
-//     Module._free(p1Ptr);
-//     Module._free(u1Ptr);  
 }
 )
 
