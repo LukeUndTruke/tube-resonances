@@ -354,7 +354,7 @@ createModule().then(Module => {
         ctx.setTransform(1,0,0,1,0,0);
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         const dpr = window.devicePixelRatio;
-        const canvasHeightHalf = ctx.canvas.height / 2;
+        const canvasHeightHalf = ctx.canvas.clientHeight / 2;
         
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);    
         const particles = g.particles;
